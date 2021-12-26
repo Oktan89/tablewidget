@@ -1,40 +1,50 @@
 #include "table.h"
 #include <iostream>
 
-mainTable::mainTable(QWidget *parent) : QTableWidget(parent)
-{
 
+MyModel::MyModel(QObject *parent)
+    : QAbstractTableModel(parent)
+{
 }
 
-mainTable::~mainTable()
+int MyModel::rowCount(const QModelIndex & /*parent*/) const
 {
-
+    std::cout << "rowcount : "<< row << std::endl;
+   return row;
 }
 
-void mainTable::additem_table()
+int MyModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    if(columnCount() < 2)
-        setColumnCount(2);
-    QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
-    __qtablewidgetitem->setText("test");
-    setHorizontalHeaderItem(0, __qtablewidgetitem);
+    std::cout << "columncount" << std::endl;
+    return column;
+}
 
-    QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
-    __qtablewidgetitem1->setText("test2");
-    setHorizontalHeaderItem(1, __qtablewidgetitem1);
+QVariant MyModel::data(const QModelIndex &index, int role) const
+{
+    std::cout << index.row() << std::endl;
+    std::cout << index.column() << std::endl;
+    if (role == Qt::DisplayRole)
+       return QString("Row%1, Column%2, %3")
+                   .arg(index.row() + 1)
+                   .arg(index.column() +1)
+                   .arg("^)");
 
-    if(rowCount() < 1)
-        setRowCount(1);
-     QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
-     __qtablewidgetitem2->setText("test3");
-     setVerticalHeaderItem(0, __qtablewidgetitem2);
+    return QVariant();
+}
 
-     QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
-     __qtablewidgetitem->setText("10");
-     setItem(0, 0, __qtablewidgetitem3);
+void MyModel::add_table()
+{
+    QModelIndex topLeft = createIndex(1,2);
+    ++row;
+    emit dataChanged(topLeft, topLeft, {Qt::DisplayRole});
+    insertRow(++row);
+}
 
-     QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
-     __qtablewidgetitem4->setText("15");
-     setItem(0, 1, __qtablewidgetitem4);
-     //update();
+bool MyModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    std::cout<<"Insert: ROW " <<row <<" COUNT "<< count << "\n";
+    beginInsertRows(parent, row, row);
+
+    endInsertRows();
+    return true;
 }

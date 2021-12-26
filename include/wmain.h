@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QTableView>
 #include "table.h"
 
 
@@ -11,7 +12,8 @@ class WindowMain : public QMainWindow
 {
     Q_OBJECT
     QWidget * m_centralWidget;
-    mainTable *m_table;
+    MyModel *m_modeltable;
+    QTableView *m_table;
     QHBoxLayout *m_hlayout;
     QPushButton *m_button;
 public:
